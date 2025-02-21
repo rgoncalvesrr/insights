@@ -61,7 +61,11 @@ Aqui estamos assumindo uma aplição de backend, então, com isso em mente, noss
 
 Veja o esquema a seguir:
 
-![image](https://github.com/user-attachments/assets/9af99788-7550-435d-8969-86cafd785477)
+
+![image](https://github.com/user-attachments/assets/86475b25-be38-4087-9d48-4ca7b04e9aa5)
+
+
+
 
 
   
