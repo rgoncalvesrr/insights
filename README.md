@@ -56,5 +56,11 @@ Aqui estamos assumindo uma aplição de backend, então, com isso em mente, noss
 - Aplicação (API)
 - Core (Aplicação)
 
+> [!IMPORTANT]
+>  SIM, a "sujeira" ficará dentro do módulo `Core`. Tenha calma, será uma "sujeira" organizada.
+
+Veja o esquema a seguir:
+
+![image](https://github.com/user-attachments/assets/edfbf2be-0a4d-439e-a94d-abe6f2ffdd90)
 
   
