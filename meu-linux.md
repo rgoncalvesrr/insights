@@ -149,11 +149,11 @@ dnf group install -y development-tools
 ```
 
 ```bash
-dnf install -y golang java-21-openjdk java-21-openjdk-devel
+dnf install -y golang java-21-openjdk java-21-openjdk-devel dotnet-sdk-8.0
 ```
 
 #### Escritório
 
 ```bash
-dnf install -y thunderbird vim htop duf fastfetch
+dnf install -y thunderbird vim htop duf fastfetch gnucash libdbi-dbd-sqlite
 ```
