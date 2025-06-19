@@ -149,7 +149,7 @@ dnf group install -y development-tools
 ```
 
 ```bash
-dnf install -y golang java-21-openjdk java-21-openjdk-devel dotnet-sdk-8.0
+dnf install -y golang java-21-openjdk java-21-openjdk-devel dotnet-sdk-8.0 nodejs
 ```
 
 #### Escritório
