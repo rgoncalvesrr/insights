@@ -138,3 +138,22 @@ Agora, Kyber deverá estar entre parênteses, indicando que está em uso: `mq-de
 - **TuneD**: O Fedora (e Red Hat Enterprise Linux) utiliza o TuneD para otimização de desempenho. Você pode usar o TuneD para definir o agendador de disco para perfis específicos. No entanto, a modificação do GRUB é uma maneira mais direta de definir o agendador padrão para todos os discos.
 - **Regras udev**: Para um controle mais granular sobre agendadores de disco por dispositivo, você pode usar regras udev. No entanto, para a maioria dos usuários, definir no GRUB é suficiente.
 
+## Instalação de Pacotes
+
+### Fedora 42
+
+#### Ferramentas de Desenvolvimento
+
+```bash
+dnf group install -y development-tools
+```
+
+```bash
+dnf install -y golang java-21-openjdk java-21-openjdk-devel
+```
+
+#### Escritório
+
+```bash
+dnf install -y thunderbird vim htop duf fastfetch
+```
