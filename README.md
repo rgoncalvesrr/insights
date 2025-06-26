@@ -1,5 +1,7 @@
-# insights
+# Insights
 Ideias, boas práticas, memória e algo que não me lembro agora... 😁
+
+[Mode-View-Presenter Delphi]("./mvp.md") | [Meu Linux Desktop]("./meu-linux.md")
 
 ## Organização dos módulos
 
@@ -63,9 +65,3 @@ Veja o esquema a seguir:
 
 
 ![image](https://github.com/user-attachments/assets/86475b25-be38-4087-9d48-4ca7b04e9aa5)
-
-
-
-
-
-  
