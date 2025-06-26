@@ -105,7 +105,10 @@ As interfaces são o contrato que garante o baixo acoplamento.
 ### 4.6 Implementação Detalhada por Camada
 Esta seção contém os exemplos de código essenciais que formam a espinha dorsal da nossa arquitetura.
 
-#### 4.6.1. As Interfaces (Os Contratos)
+<details>
+<summary>4.6.1. As Interfaces (Os Contratos)
+</summary>
+  
 As interfaces definem o que cada componente faz, garantindo o desacoplamento.
 
 **Arquivo**: `Logger.Interfaces.pas`
@@ -126,7 +129,6 @@ type
 implementation
 end.
 ```
-
 
 **Arquivo**: `Cliente.Interfaces.pas`
 
@@ -181,7 +183,7 @@ type
 implementation
 end.
 ```
-
+</details>
 
 #### 4.6.2. O Objeto de Domínio
 Representa a estrutura de dados principal.
