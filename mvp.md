@@ -35,7 +35,7 @@ O padrão Model-View-Presenter divide a funcionalidade em três papéis distinto
 ### Diagrama de Componentes
 Este diagrama ilustra a relação estática entre os principais componentes do nosso exemplo de "Cadastro de Clientes".
 
-![image](https://github.com/user-attachments/assets/26d5867c-ca00-4265-9c45-d740aa1a7c5f)
+![image](./assets/mvp-diagrama-comp.png)
 
 ## 4. Detalhamento dos Componentes
 
@@ -145,7 +145,7 @@ A decisão de **não reutilizar o DataSet** da grade na tela de edição é fund
 
 **Diagrama de Sequência: Ação "Salvar"**
 
-![MVP 5 2](https://github.com/rgoncalvesrr/insights/blob/main/MVP%205.2.png)
+![Diagrama de Sequência](./assets/mvp-diagrama-seq.png)
 
 ## 6. Conclusão: Benefícios da Arquitetura Adotada
 A aplicação deste padrão, embora exija uma estrutura de arquivos mais elaborada, traz benefícios imensuráveis a médio e longo prazo:
@@ -205,13 +205,13 @@ A diferença crucial está no papel do intermediário (Controller vs. Presenter)
 
 | Model-View-Controller | Mode-View-Presenter |
 |-|-|
-| ![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVC.png) | ![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVP.png) |
+| ![MVC](./assets/mvp-diagrama-mvc.png) | ![MVC](./assets/mvp-diagrama-mvp.png) |
 
 
 ## Diagrama de Sequência: MVC (Model-View-Controller)
 Neste diagrama, a View tem conhecimento do Model e é responsável por buscar os dados para se renderizar depois que o Controller o atualiza.
 
-![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVC.png)
+![MVC](./assets/mvp-diagrama-mvc.png)
 
 **Fluxo Detalhado (MVC)**:
 
@@ -226,7 +226,7 @@ Neste diagrama, a View tem conhecimento do Model e é responsável por buscar os
 ## Diagrama de Sequência: MVP (Model-View-Presenter)
 Neste diagrama, a View é passiva. O Presenter atua como um intermediário completo, buscando os dados do Model e empurrando-os para a View.
 
-![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVP.png)
+![MVC](./assets/mvp-diagrama-mvp.png)
 
 **Fluxo Detalhado (MVP)**:
 
