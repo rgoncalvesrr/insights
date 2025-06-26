@@ -1,7 +1,7 @@
 # Insights
 Ideias, boas práticas, memória e algo que não me lembro agora... 😁
 
-[Mode-View-Presenter Delphi]("mvp.md") | [Meu Linux Desktop]("meu-linux.md")
+[Mode-View-Presenter Delphi](mvp.md) | [Meu Linux Desktop](meu-linux.md)
 
 ## Organização dos módulos
 
