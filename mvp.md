@@ -30,32 +30,55 @@ O padrão Model-View-Presenter divide a funcionalidade em três papéis distinto
 ### Diagrama de Componentes
 Este diagrama ilustra a relação estática entre os principais componentes do nosso exemplo de "Cadastro de Clientes".
 
-```mermaid
----
-config:
-  layout: fixed
----
-flowchart TD
- subgraph subGraph0["Tela de Pesquisa (TFormPesquisaClientes)"]
-    direction LR
-        ViewPesquisa["<b>View Pesquisa</b><br>Implementa IClientePesquisaView"]
-        PresenterPesquisa["<b>Presenter Pesquisa</b><br>TClientePesquisaPresenter"]
-  end
- subgraph subGraph1["Tela de Cadastro (TFormCadastroCliente)"]
-    direction LR
-        ViewCadastro["<b>View Cadastro</b><br>Implementa IClienteView"]
-        PresenterCadastro["<b>Presenter Cadastro</b><br>TClientePresenter"]
-  end
- subgraph subGraph2["Lógica e Dados (Back-end)"]
-    direction LR
-        Service["<b>Service (TClienteService)</b><br>Regras de Negócio"]
-        DataAccess["<b>Data Access (TDMClientes)</b>"]
-        Logger["<b>Logger (ILogger)</b>"]
-  end
-    ViewPesquisa -- Interage com --> PresenterPesquisa
-    ViewCadastro -- Interage com --> PresenterCadastro
-    PresenterPesquisa -- Usa --> Service
-    PresenterCadastro -- Usa --> Service
-    Service -- Usa --> DataAccess & Logger
-    ViewPesquisa -- Cria e Chama --> ViewCadastro
-```
+![image](https://github.com/user-attachments/assets/26d5867c-ca00-4265-9c45-d740aa1a7c5f)
+
+## 4. Detalhamento dos Componentes
+### 4.1. Interfaces (`Cliente.Interfaces.pas`, `Logger.Interfaces.pas`)
+As interfaces são o contrato que garante o baixo acoplamento.
+
+- `ILogger`: Define o que um serviço de log deve fazer (`LogInfo`, `LogError`), mas não como. Permite trocar um log de arquivo por um de banco de dados sem alterar nenhuma outra parte do sistema.
+- `IClienteView`, `IClientePesquisaView`: Definem as propriedades e métodos que a View **deve** expor para o Presenter (ex: `GetNome`, `SetNome`, `GetDataSource`). Isso permite que o Presenter trabalhe com a View sem conhecer sua classe concreta (`TForm`), o que é essencial para testes.
+- `IClientePresenter`, `IClientePesquisaPresenter`: Definem as ações que a View pode solicitar ao Presenter (ex: `Salvar`, `Pesquisar`).
+
+### 4.2. A Camada de Apresentação (View)
+- **Responsabilidade**: Exibir dados e capturar interações do usuário.
+- **Implementação**: TFormPesquisaClientes e TFormCadastroCliente.
+- **Características**:
+  - Implementa a interface de View correspondente.
+  - Contém os componentes visuais (`TDBGrid`, `TEdit`, `TButton`).
+  - _**Não contém nenhuma regra de negócio**_.
+  - Os eventos de clique dos botões são, em geral, uma única linha que chama o método correspondente no Presenter.
+  - Exemplo:
+    ```delphi
+    procedure TFormPesquisaClientes.btnPesquisarClick(Sender: TObject);
+    begin
+      FPresenter.Pesquisar;
+    end;
+    ```
+
+### 4.3. O Apresentador (Presenter)
+- **Responsabilidade**: Orquestrar a comunicação entre a View e o Model.
+- **Implementação**: `TClientePesquisaPresenter` e `TClientePresenter`.
+- **Características**:
+  - Recebe a interface da View (`I...View`) e a instância do Service no seu construtor.
+  - Contém a lógica de apresentação: "Quando o usuário clicar em Editar, pegue o ID da View, chame o método da View para abrir a outra tela, passando o ID".
+  - Recebe dados do Service e os envia para a View de forma simples para que ela possa exibi-los.
+
+### 4.4. A Camada de Lógica (Service)
+- **Responsabilidade**: Implementar e garantir as regras de negócio do sistema.
+- **Implementação**: `TClienteService`.
+- **Características**:
+  - É uma classe `TObject` pura. Não conhece e não deve conhecer nenhuma classe da VCL.
+  - Recebe suas dependências (Logger, Data Access) via construtor.
+  - Contém os métodos centrais da funcionalidade (`Salvar`, `Carregar`, `Listar`).
+  - É aqui que as validações ocorrem (ex: "O nome do cliente não pode ser vazio").
+  - É aqui que a lógica de log é invocada.
+
+### 4.5. A Camada de Dados (Data Access)
+- **Responsabilidade**: Exclusivamente ler e escrever no banco de dados.
+- **Implementação**: `TDMClientes` (um `TDataModule`).
+- **Características**:
+  - Centraliza todos os componentes de acesso a dados (`TADOConnection`, `TADOQuery`).
+  - Expõe métodos de alto nível (ex: `CarregarPorID`, `Listar`).
+  - Retorna ou um objeto de domínio preenchido (`TCliente`) ou um TDataSet para listagens, mas não contém lógica de negócio.
+
