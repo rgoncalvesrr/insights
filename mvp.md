@@ -31,32 +31,31 @@ O padrão Model-View-Presenter divide a funcionalidade em três papéis distinto
 Este diagrama ilustra a relação estática entre os principais componentes do nosso exemplo de "Cadastro de Clientes".
 
 ```mermaid
-graph TD
-    subgraph "Tela de Pesquisa (TFormPesquisaClientes)"
-        direction LR
+---
+config:
+  layout: fixed
+---
+flowchart TD
+ subgraph subGraph0["Tela de Pesquisa (TFormPesquisaClientes)"]
+    direction LR
         ViewPesquisa["<b>View Pesquisa</b><br>Implementa IClientePesquisaView"]
         PresenterPesquisa["<b>Presenter Pesquisa</b><br>TClientePesquisaPresenter"]
-    end
-
-    subgraph "Tela de Cadastro (TFormCadastroCliente)"
-        direction LR
+  end
+ subgraph subGraph1["Tela de Cadastro (TFormCadastroCliente)"]
+    direction LR
         ViewCadastro["<b>View Cadastro</b><br>Implementa IClienteView"]
         PresenterCadastro["<b>Presenter Cadastro</b><br>TClientePresenter"]
-    end
-
-    subgraph "Lógica e Dados (Back-end)"
-        direction LR
+  end
+ subgraph subGraph2["Lógica e Dados (Back-end)"]
+    direction LR
         Service["<b>Service (TClienteService)</b><br>Regras de Negócio"]
         DataAccess["<b>Data Access (TDMClientes)</b>"]
         Logger["<b>Logger (ILogger)</b>"]
-    end
-    
-    %% Relacionamentos
+  end
     ViewPesquisa -- Interage com --> PresenterPesquisa
     ViewCadastro -- Interage com --> PresenterCadastro
     PresenterPesquisa -- Usa --> Service
     PresenterCadastro -- Usa --> Service
-    Service -- Usa --> DataAccess
-    Service -- Usa --> Logger
+    Service -- Usa --> DataAccess & Logger
     ViewPesquisa -- Cria e Chama --> ViewCadastro
 ```
