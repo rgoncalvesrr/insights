@@ -470,6 +470,49 @@ end.
 ```
 
 
+#### 4.6.7. O Ponto de Entrada: O Arquivo de Projeto (`.dpr`)
+Todos os componentes e formulários que projetamos são inicializados e orquestrados a partir do arquivo principal do projeto.
+
+*Arquivo*: `ProjetoMVP.dpr`
+
+Este arquivo configura e executa a aplicação. A ordem de criação dos formulários e módulos aqui é fundamental.
+
+```delphi
+program ProjetoMVP;
+
+uses
+  Forms,
+  // Adicione as units dos formulários e módulos que serão auto-criados aqui
+  View.PesquisaClientes in 'View.PesquisaClientes.pas' {FormPesquisaClientes},
+  View.CadastroCliente in 'View.CadastroCliente.pas' {FormCadastroCliente},
+  Data.Cliente in 'Data.Cliente.pas' {DMClientes: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  
+  // IMPORTANTE: Ordem de Criação
+  // 1. Crie o DataModule PRIMEIRO. Isso garante que a conexão com o banco
+  //    e os componentes de dados estejam disponíveis para qualquer formulário
+  //    que possa precisar deles durante sua própria criação.
+  Application.CreateForm(TDMClientes, DMClientes);
+  
+  // 2. Crie o Formulário Principal da Aplicação.
+  //    Esta será a primeira tela que o usuário verá.
+  Application.CreateForm(TFormPesquisaClientes, FormPesquisaClientes);
+  
+  // NOTA: O TFormCadastroCliente NÃO é criado aqui.
+  // Ele é um formulário secundário e será criado sob demanda pela
+  // TFormPesquisaClientes quando o usuário clicar em "Novo" ou "Editar".
+  // Isso economiza recursos e segue o nosso design.
+  
+  Application.Run;
+end.
+```
+
+
 ## 5. Fluxos de Trabalho em Ação
 
 ### 5.1. Fluxo: Listar Clientes na Grade
