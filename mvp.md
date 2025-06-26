@@ -3,6 +3,7 @@
 | Versão | Data | Autor |
 |-|-|-|
 | 1.0 | 26 de junho de 2025 | Gemini |
+| 1.1 | 26 de junho de 2025 | Ricardo Gonçalves |
 
 ## 1. Objetivo
 Este documento estabelece a arquitetura padrão para o desenvolvimento de novas funcionalidades do sistema. O objetivo principal é resolver problemas comuns em aplicações VCL legadas, como o acoplamento de código, a mistura de responsabilidades (UI, regras de negócio, acesso a dados) e a baixa testabilidade.
