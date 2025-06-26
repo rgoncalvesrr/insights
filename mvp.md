@@ -33,6 +33,7 @@ O padrão Model-View-Presenter divide a funcionalidade em três papéis distinto
 
 - **Presenter (Apresentador)**: O cérebro da operação. Atua como um intermediário que conecta a View ao Model. Ele recebe os eventos da View, aciona a lógica no Service, recebe os dados de volta e formata-os para serem exibidos na View.
 
+
 ### Diagrama de Componentes
 Este diagrama ilustra a relação estática entre os principais componentes do nosso exemplo de "Cadastro de Clientes".
 
@@ -99,6 +100,374 @@ As interfaces são o contrato que garante o baixo acoplamento.
   - Centraliza todos os componentes de acesso a dados (`TADOConnection`, `TADOQuery`).
   - Expõe métodos de alto nível (ex: `CarregarPorID`, `Listar`).
   - Retorna ou um objeto de domínio preenchido (`TCliente`) ou um TDataSet para listagens, mas não contém lógica de negócio.
+
+
+### 4.6 Implementação Detalhada por Camada
+Esta seção contém os exemplos de código essenciais que formam a espinha dorsal da nossa arquitetura.
+
+#### 4.6.1. As Interfaces (Os Contratos)
+As interfaces definem o que cada componente faz, garantindo o desacoplamento.
+
+**Arquivo**: `Logger.Interfaces.pas`
+
+```delphi
+unit Logger.Interfaces;
+
+interface
+
+type
+  ILogger = interface
+    ['{GUID-1}'] // Use Ctrl+Shift+G para gerar
+    procedure LogInfo(const AMensagem: string);
+    procedure LogWarning(const AMensagem: string);
+    procedure LogError(const AMensagem: string; AException: Exception = nil);
+  end;
+
+implementation
+end.
+```
+
+
+**Arquivo**: `Cliente.Interfaces.pas`
+
+```delphi
+unit Cliente.Interfaces;
+
+interface
+
+uses Cliente;
+
+type
+  IClienteView = interface
+    ['{GUID-2}']
+    function GetClienteID: Integer;
+    procedure SetClienteID(const Value: Integer);
+    function GetNome: string;
+    procedure SetNome(const Value: string);
+    function GetCidade: string;
+    procedure SetCidade(const Value: string);
+    procedure ExibirMensagemErro(const AMsg: string);
+    procedure ExibirMensagemSucesso(const AMsg: string);
+    procedure Fechar;
+    property ClienteID: Integer read GetClienteID write SetClienteID;
+    property Nome: string read GetNome write SetNome;
+    property Cidade: string read GetCidade write SetCidade;
+  end;
+  
+  IClientePresenter = interface
+    ['{GUID-3}']
+    procedure CarregarDados;
+    procedure Salvar;
+  end;
+  
+  IClientePesquisaView = interface
+    ['{GUID-4}']
+    function GetTermoBusca: string;
+    function GetIDSelecionado: Integer;
+    function GetDataSource: TDataSource;
+    procedure AbrirTelaCadastro(AID: Integer);
+    property TermoBusca: string read GetTermoBusca;
+    property IDSelecionado: Integer read GetIDSelecionado;
+    property DataSource: TDataSource read GetDataSource;
+  end;
+
+  IClientePesquisaPresenter = interface
+    ['{GUID-5}']
+    procedure Pesquisar;
+    procedure Novo;
+    procedure Editar;
+  end;
+
+implementation
+end.
+```
+
+
+#### 4.6.2. O Objeto de Domínio
+Representa a estrutura de dados principal.
+
+*Arquivo*: `Cliente.pas`
+
+```delphi
+unit Cliente;
+
+interface
+
+type
+  TCliente = class
+  private
+    FID: Integer;
+    FNome: string;
+    FCidade: string;
+  public
+    property ID: Integer read FID write FID;
+    property Nome: string read FNome write FNome;
+    property Cidade: string read FCidade write FCidade;
+  end;
+
+implementation
+end.
+```
+
+
+#### 4.6.3. A Camada de Dados (Data Access)
+Responsável apenas pela comunicação com o banco.
+
+*Arquivo*: `Data.Cliente.pas` (TDataModule)
+
+```delphi
+unit Data.Cliente;
+
+interface
+uses SysUtils, Classes, DB, ADODB, Cliente;
+
+type
+  TDMClientes = class(TDataModule)
+    ADOConnection: TADOConnection;
+    qryCliente: TADOQuery;
+    qryListagem: TADOQuery;
+  public
+    function Salvar(ACliente: TCliente): Integer;
+    function CarregarPorID(AID: Integer): TCliente;
+    function Listar(const ATermoBusca: string): TDataSet;
+  end;
+
+implementation
+{$R *.dfm}
+
+function TDMClientes.CarregarPorID(AID: Integer): TCliente;
+begin
+  // ... Lógica SELECT ... WHERE ID = :ID
+  // Se encontrar, cria e preenche um objeto TCliente.
+end;
+
+function TDMClientes.Listar(const ATermoBusca: string): TDataSet;
+begin
+  qryListagem.Close;
+  qryListagem.SQL.Text := 'SELECT ID, NOME, CIDADE FROM CLIENTES WHERE NOME LIKE :TERMO';
+  qryListagem.Parameters.ParamByName('TERMO').Value := '%' + ATermoBusca + '%';
+  qryListagem.Open;
+  Result := qryListagem;
+end;
+
+function TDMClientes.Salvar(ACliente: TCliente): Integer;
+begin
+  // ... Lógica INSERT/UPDATE ...
+end;
+
+end.
+```
+
+
+#### 4.6.4. A Camada de Lógica (Service)
+Onde as regras de negócio residem.
+
+*Arquivo*: `Cliente.Service.pas`
+
+```delphi
+unit Cliente.Service;
+
+interface
+uses Classes, Cliente, Logger.Interfaces, Data.Cliente, DB;
+
+type
+  TClienteService = class
+  private
+    FLogger: ILogger;
+    FClienteData: TDMClientes;
+    procedure ValidarCliente(ACliente: TCliente);
+  public
+    constructor Create(ALogger: ILogger; AClienteData: TDMClientes);
+    procedure Salvar(ACliente: TCliente);
+    function Carregar(AID: Integer): TCliente;
+    function Listar(const ATermoBusca: string): TDataSet;
+  end;
+
+implementation
+uses SysUtils;
+
+constructor TClienteService.Create(ALogger: ILogger; AClienteData: TDMClientes);
+begin
+  inherited Create;
+  FLogger := ALogger;
+  FClienteData := AClienteData;
+end;
+
+procedure TClienteService.ValidarCliente(ACliente: TCliente);
+begin
+  if Trim(ACliente.Nome) = '' then
+    raise Exception.Create('O nome do cliente é obrigatório.');
+end;
+
+procedure TClienteService.Salvar(ACliente: TCliente);
+begin
+  FLogger.LogInfo('Iniciando tentativa de salvar cliente: ' + ACliente.Nome);
+  try
+    ValidarCliente(ACliente);
+    FClienteData.Salvar(ACliente);
+    FLogger.LogInfo('Cliente salvo com sucesso.');
+  except
+    on E: Exception do
+    begin
+      FLogger.LogError('Erro ao salvar cliente ' + ACliente.Nome, E);
+      raise;
+    end;
+  end;
+end;
+
+function TClienteService.Carregar(AID: Integer): TCliente;
+begin
+  Result := FClienteData.CarregarPorID(AID);
+end;
+
+function TClienteService.Listar(const ATermoBusca: string): TDataSet;
+begin
+  Result := FClienteData.Listar(ATermoBusca);
+end;
+
+end.
+```
+
+#### 4.6.5. Os Apresentadores (Presenters)
+O cérebro que conecta a View ao Service.
+
+*Arquivo*: `Cliente.Pesquisa.Presenter.pas`
+```delphi
+unit Cliente.Pesquisa.Presenter;
+// ... uses ...
+type
+  TClientePesquisaPresenter = class(TInterfacedObject, IClientePesquisaPresenter)
+  private
+    FView: IClientePesquisaView;
+    FService: TClienteService;
+  public
+    constructor Create(AView: IClientePesquisaView; AService: TClienteService);
+    procedure Pesquisar;
+    procedure Novo;
+    procedure Editar;
+  end;
+
+implementation
+// ... implementação dos métodos ...
+procedure TClientePesquisaPresenter.Pesquisar;
+begin
+  FView.DataSource.DataSet := FService.Listar(FView.TermoBusca);
+end;
+
+procedure TClientePesquisaPresenter.Editar;
+var LID: Integer;
+begin
+  LID := FView.IDSelecionado;
+  if LID > 0 then FView.AbrirTelaCadastro(LID);
+end;
+
+// ...
+end.
+```
+
+
+*Arquivo*: `Cliente.Presenter.pas` *(Para a tela de cadastro)*
+```delphi
+unit Cliente.Presenter;
+// ... uses ...
+type
+  TClientePresenter = class(TInterfacedObject, IClientePresenter)
+  private
+    FView: IClienteView;
+    FService: TClienteService;
+  public
+    constructor Create(AView: IClienteView; AService: TClienteService);
+    procedure CarregarDados;
+    procedure Salvar;
+  end;
+
+implementation
+// ... implementação dos métodos ...
+procedure TClientePresenter.CarregarDados;
+var LCliente: TCliente;
+begin
+  if FView.ClienteID <= 0 then Exit;
+  LCliente := FService.Carregar(FView.ClienteID);
+  if Assigned(LCliente) then
+  begin
+    FView.Nome := LCliente.Nome;
+    FView.Cidade := LCliente.Cidade;
+    LCliente.Free;
+  end;
+end;
+
+procedure TClientePresenter.Salvar;
+var LCliente: TCliente;
+begin
+  LCliente := TCliente.Create;
+  try
+    LCliente.ID := FView.ClienteID;
+    LCliente.Nome := FView.Nome;
+    LCliente.Cidade := FView.Cidade;
+    FService.Salvar(LCliente);
+    FView.ExibirMensagemSucesso('Cliente salvo!');
+    FView.Fechar;
+  finally
+    LCliente.Free;
+  end;
+  //...
+end;
+
+end.
+```
+
+
+#### 4.6.6. A Camada de Apresentação (Views)
+As classes `TForm` que implementam as interfaces de View.
+
+*Arquivo*: `View.PesquisaClientes.pas`
+
+```delphi
+unit View.PesquisaClientes;
+// ... uses ...
+type
+  TFormPesquisaClientes = class(TForm, IClientePesquisaView)
+    // ... componentes visuais ...
+    procedure btnPesquisarClick(Sender: TObject);
+    // ... outros eventos ...
+  private
+    FPresenter: IClientePesquisaPresenter;
+    function GetTermoBusca: string;
+    function GetIDSelecionado: Integer;
+    function GetDataSource: TDataSource;
+    procedure AbrirTelaCadastro(AID: Integer);
+  end;
+
+implementation
+uses View.CadastroCliente;
+{$R *.dfm}
+
+procedure TFormPesquisaClientes.btnPesquisarClick(Sender: TObject);
+begin
+  FPresenter.Pesquisar;
+end;
+
+function TFormPesquisaClientes.GetIDSelecionado: Integer;
+begin
+  Result := 0;
+  if Assigned(dsClientes.DataSet) and (not dsClientes.DataSet.IsEmpty) then
+    Result := dsClientes.DataSet.FieldByName('ID').AsInteger;
+end;
+
+procedure TFormPesquisaClientes.AbrirTelaCadastro(AID: Integer);
+var LFormCadastro: TFormCadastroCliente;
+begin
+  LFormCadastro := TFormCadastroCliente.Create(Self);
+  try
+    if AID > 0 then LFormCadastro.Editar(AID);
+    LFormCadastro.ShowModal;
+  finally
+    LFormCadastro.Free;
+  end;
+end;
+// ... resto da implementação da interface e criação do presenter no FormCreate ...
+end.
+```
 
 
 ## 5. Fluxos de Trabalho em Ação
