@@ -489,7 +489,7 @@ end.
 </details>
 
 <details>
-<summary>4.6.7. O Ponto de Entrada: O Arquivo de Projeto (`.dpr`)</summary>
+<summary>4.6.7. O Ponto de Entrada: O Arquivo de Projeto (.dpr)</summary>
 <p/>
 
 Todos os componentes e formulários que projetamos são inicializados e orquestrados a partir do arquivo principal do projeto.
