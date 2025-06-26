@@ -56,7 +56,7 @@ As interfaces são o contrato que garante o baixo acoplamento.
   - Implementa a interface de **View** correspondente.
   - Contém os componentes visuais (`TDBGrid`, `TEdit`, `TButton`).
   - **Não contém nenhuma regra de negócio**.
-  - Os eventos de clique dos botões são, em geral, uma única linha que chama o método correspondente no _**Presenter**_.
+  - Os eventos de clique dos botões são, em geral, uma única linha que chama o método correspondente no **Presenter**.
   - Exemplo:
     ```delphi
     procedure TFormPesquisaClientes.btnPesquisarClick(Sender: TObject);
