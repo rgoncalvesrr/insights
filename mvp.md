@@ -106,8 +106,10 @@ As interfaces são o contrato que garante o baixo acoplamento.
 Esta seção contém os exemplos de código essenciais que formam a espinha dorsal da nossa arquitetura.
 
 <details>
-<summary>4.6.1. As Interfaces (Os Contratos)
+<summary>
+  4.6.1. As Interfaces (Os Contratos)
 </summary>
+
   
 As interfaces definem o que cada componente faz, garantindo o desacoplamento.
 
@@ -185,7 +187,12 @@ end.
 ```
 </details>
 
-#### 4.6.2. O Objeto de Domínio
+<details>
+<summary>
+ 4.6.2. O Objeto de Domínio
+</summary>
+
+
 Representa a estrutura de dados principal.
 
 *Arquivo*: `Cliente.pas`
@@ -210,9 +217,14 @@ type
 implementation
 end.
 ```
+</details>
+
+<details>
+<summary>
+4.6.3. A Camada de Dados (Data Access)
+</summary>
 
 
-#### 4.6.3. A Camada de Dados (Data Access)
 Responsável apenas pela comunicação com o banco.
 
 *Arquivo*: `Data.Cliente.pas` (TDataModule)
@@ -259,7 +271,7 @@ end;
 
 end.
 ```
-
+</details>
 
 #### 4.6.4. A Camada de Lógica (Service)
 Onde as regras de negócio residem.
