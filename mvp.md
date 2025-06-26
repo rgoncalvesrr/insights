@@ -53,10 +53,10 @@ As interfaces são o contrato que garante o baixo acoplamento.
 - **Implementação**: TFormPesquisaClientes e TFormCadastroCliente.
 
 - **Características**:
-  - Implementa a interface de View correspondente.
+  - Implementa a interface de **View** correspondente.
   - Contém os componentes visuais (`TDBGrid`, `TEdit`, `TButton`).
   - **Não contém nenhuma regra de negócio**.
-  - Os eventos de clique dos botões são, em geral, uma única linha que chama o método correspondente no Presenter.
+  - Os eventos de clique dos botões são, em geral, uma única linha que chama o método correspondente no _**Presenter**_.
   - Exemplo:
     ```delphi
     procedure TFormPesquisaClientes.btnPesquisarClick(Sender: TObject);
@@ -67,14 +67,14 @@ As interfaces são o contrato que garante o baixo acoplamento.
 
 
 ### 4.3. O Apresentador (Presenter)
-- **Responsabilidade**: Orquestrar a comunicação entre a View e o Model.
+- **Responsabilidade**: Orquestrar a comunicação entre a **View** e o **Model**.
 
 - **Implementação**: `TClientePesquisaPresenter` e `TClientePresenter`.
 
 - **Características**:
-  - Recebe a interface da View (`I...View`) e a instância do Service no seu construtor.
-  - Contém a lógica de apresentação: "Quando o usuário clicar em Editar, pegue o ID da View, chame o método da View para abrir a outra tela, passando o ID".
-  - Recebe dados do Service e os envia para a View de forma simples para que ela possa exibi-los.
+  - Recebe a interface da **View** (`I...View`) e a instância do **Service** no seu construtor.
+  - Contém a lógica de apresentação: "Quando o usuário clicar em Editar, pegue o ID da **View**, chame o método da View para abrir a outra tela, passando o ID".
+  - Recebe dados do **Service** e os envia para a **View** de forma simples para que ela possa exibi-los.
 
 
 ### 4.4. A Camada de Lógica (Service)
@@ -108,13 +108,13 @@ As interfaces são o contrato que garante o baixo acoplamento.
 
 2. **View** (`TFormPesquisaClientes`) aciona o método `btnPesquisarClick`, que chama `FPresenter.Pesquisar`.
 
-3. **Presenter** (`TClientePesquisaPresenter`) chama `FService.Listar`, passando o termo de busca que ele obteve da View.
+3. **Presenter** (`TClientePesquisaPresenter`) chama `FService.Listar`, passando o termo de busca que ele obteve da **View**.
 
-4. **Service** (`TClienteService`) loga a ação e chama FClienteData.Listar.
+4. **Service** (`TClienteService`) loga a ação e chama `FClienteData.Listar`.
 
 5. **Data Access** (`TDMClientes`) executa a consulta `SELECT` no banco e retorna o `TADOQuery` (um `TDataSet`) aberto.
 
-6. **Presenter** recebe o `TDataSet` e o atribui ao `DataSource` da View: `FView.DataSource.DataSet := LDataSet;`.
+6. **Presenter** recebe o `TDataSet` e o atribui ao `DataSource` da **View**: `FView.DataSource.DataSet := LDataSet;`.
 
 7. **View**, através da mágica data-aware da VCL, exibe automaticamente os dados na TDBGrid.
 
@@ -124,23 +124,23 @@ As interfaces são o contrato que garante o baixo acoplamento.
 
 2. **View de Pesquisa** aciona o método `btnEditarClick`, que chama `FPresenter.Editar`.
 
-3. **Presenter de Pesquisa** obtém o `IDSelecionado` da View e chama `FView.AbrirTelaCadastro(ID)`.
+3. **Presenter de Pesquisa** obtém o `IDSelecionado` da **View** e chama `FView.AbrirTelaCadastro(ID)`.
 
 4. **View de Pesquisa** cria a instância do `TFormCadastroCliente` e passa o ID para ele.
 
 5. **View de Cadastro**, ao ser exibida (`OnShow`), chama `FPresenter.CarregarDados`.
 
-6. **Presenter de Cadastro** chama `FService.Carregar(ID)`. O Service busca os dados no banco (via DataModule) e retorna um objeto `TCliente` preenchido.
+6. **Presenter de Cadastro** chama `FService.Carregar(ID)`. O **Service** busca os dados no banco (via DataModule) e retorna um objeto `TCliente` preenchido.
 
-7. **Presenter de Cadastro** recebe o objeto `TCliente` e atualiza a View: `FView.Nome := LCliente.Nome`, `FView.Cidade := LCliente.Cidade`.
+7. **Presenter de Cadastro** recebe o objeto `TCliente` e atualiza a **View**: `FView.Nome := LCliente.Nome`, `FView.Cidade := LCliente.Cidade`.
 
 8. **View de Cadastro** implementa `SetNome`, que simplesmente faz `edtNome.Text := Value`.
 
-9. **Usuário** altera os dados e clica em "Salvar". O fluxo se inverte, passando pelo Presenter, pelo Service (onde as regras são validadas e o log é gravado) e pelo Data Access para executar o `UPDATE` no banco.
+9. **Usuário** altera os dados e clica em "Salvar". O fluxo se inverte, passando pelo **Presenter**, pelo **Service** (onde as regras são validadas e o log é gravado) e pelo **Data Access** para executar o `UPDATE` no banco.
 
 10. **A View de Cadastro** é fechada.
 
-11. O controle volta para a View de Pesquisa, que, para garantir que a grade está atualizada, chama `FPresenter.Pesquisar` novamente.
+11. O controle volta para a **View de Pesquisa**, que, para garantir que a grade está atualizada, chama `FPresenter.Pesquisar` novamente.
 
 A decisão de **não reutilizar o DataSet** da grade na tela de edição é fundamental, pois garante o isolamento das telas e o respeito à camada de serviço.
 
