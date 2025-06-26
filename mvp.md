@@ -107,9 +107,10 @@ Esta seção contém os exemplos de código essenciais que formam a espinha dors
 
 <details>
 <summary>4.6.1. As Interfaces (Os Contratos)</summary>
-  
-As interfaces definem o que cada componente faz, garantindo o desacoplamento.
+<p/>
 
+As interfaces definem o que cada componente faz, garantindo o desacoplamento.
+  
 **Arquivo**: `Logger.Interfaces.pas`
 
 ```delphi
@@ -186,11 +187,11 @@ end.
 
 <details>
 <summary>4.6.2. O Objeto de Domínio</summary>
-
+<p/>
 
 Representa a estrutura de dados principal.
 
-*Arquivo*: `Cliente.pas`
+**Arquivo**: `Cliente.pas`
 
 ```delphi
 unit Cliente;
@@ -215,14 +216,12 @@ end.
 </details>
 
 <details>
-<summary>
-4.6.3. A Camada de Dados (Data Access)
-</summary>
-
+<summary>4.6.3. A Camada de Dados (Data Access)</summary>
+<p/>
 
 Responsável apenas pela comunicação com o banco.
 
-*Arquivo*: `Data.Cliente.pas` (TDataModule)
+**Arquivo**: `Data.Cliente.pas` (TDataModule)
 
 ```delphi
 unit Data.Cliente;
@@ -270,11 +269,11 @@ end.
 
 <details>
 <summary>4.6.4. A Camada de Lógica (Service)</summary>
+<p/>
 
-  
 Onde as regras de negócio residem.
 
-*Arquivo*: `Cliente.Service.pas`
+**Arquivo**: `Cliente.Service.pas`
 
 ```delphi
 unit Cliente.Service;
@@ -343,11 +342,11 @@ end.
 
 <details>
 <summary>4.6.5. Os Apresentadores (Presenters)</summary>
+<p/>
 
-  
 O cérebro que conecta a View ao Service.
 
-*Arquivo*: `Cliente.Pesquisa.Presenter.pas`
+**Arquivo**: `Cliente.Pesquisa.Presenter.pas`
 ```delphi
 unit Cliente.Pesquisa.Presenter;
 // ... uses ...
@@ -382,7 +381,7 @@ end.
 ```
 
 
-*Arquivo*: `Cliente.Presenter.pas` *(Para a tela de cadastro)*
+**Arquivo**: `Cliente.Presenter.pas` **(Para a tela de cadastro)**
 ```delphi
 unit Cliente.Presenter;
 // ... uses ...
@@ -435,11 +434,11 @@ end.
 
 <details>
 <summary>4.6.6. A Camada de Apresentação (Views)</summary>
+<p/>
 
-  
 As classes `TForm` que implementam as interfaces de View.
 
-*Arquivo*: `View.PesquisaClientes.pas`
+**Arquivo**: `View.PesquisaClientes.pas`
 
 ```delphi
 unit View.PesquisaClientes;
@@ -491,10 +490,11 @@ end.
 
 <details>
 <summary>4.6.7. O Ponto de Entrada: O Arquivo de Projeto (`.dpr`)</summary>
+<p/>
 
 Todos os componentes e formulários que projetamos são inicializados e orquestrados a partir do arquivo principal do projeto.
 
-*Arquivo*: `ProjetoMVP.dpr`
+**Arquivo**: `ProjetoMVP.dpr`
 
 Este arquivo configura e executa a aplicação. A ordem de criação dos formulários e módulos aqui é fundamental.
 
