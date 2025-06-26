@@ -202,3 +202,38 @@ A diferença crucial está no papel do intermediário (Controller vs. Presenter)
 | **Relação** | Um Controller pode gerenciar múltiplas Views. | Geralmente, um Presenter para cada View (relação 1:1). |
 | **Testabilidade** | Moderada. Testar o Controller pode ser complexo. | Alta. O Presenter é facilmente testável com mocks da View. |
 | **Origem** | Mais antigo (Década de 1970) | Mais recente (Década de 1990) |
+
+| Model-View-Controller | Mode-View-Presenter |
+|-|-|
+| ![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVC.png) | ![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVP.png) |
+
+
+## Diagrama de Sequência: MVC (Model-View-Controller)
+Neste diagrama, a View tem conhecimento do Model e é responsável por buscar os dados para se renderizar depois que o Controller o atualiza.
+
+![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVC.png)
+
+**Fluxo Detalhado (MVC)**:
+
+1. O **Usuário** realiza uma ação na **View**.
+2. A **View** invoca um método no **Controller**.
+3. O **Controller** processa a lógica e atualiza o **Model**.
+4. O **Model** notifica a **View** que seu estado foi alterado (usando o padrão Observer/Observable) ou o **Controller** devolve o controle à **View**.
+5. A **View** busca _**(puxa)**_ os dados atualizados diretamente do **Model**.
+6. A **View** se renderiza com os novos dados para o **Usuário**.
+
+
+## Diagrama de Sequência: MVP (Model-View-Presenter)
+Neste diagrama, a View é passiva. O Presenter atua como um intermediário completo, buscando os dados do Model e empurrando-os para a View.
+
+![MVC](https://github.com/rgoncalvesrr/insights/blob/main/MVP.png)
+
+**Fluxo Detalhado (MVP)**:
+
+1. O **Usuário** realiza uma ação na **View**.
+2. A **View**, sendo passiva, apenas notifica o **Presenter** sobre o evento, sem nenhuma lógica.
+3. O **Presenter** solicita os dados ao **Model**.
+4. O **Model** retorna os dados solicitados para o **Presenter**.
+5. O **Presenter** aplica qualquer lógica de formatação e empurra os dados para a **View**, chamando métodos específicos (ex: `view.setNome(...)`, `view.setEmail(...)`).
+6. A **View** simplesmente atualiza seus componentes visuais com os dados que recebeu.
+7. A **View** exibe o resultado para o **Usuário**.
