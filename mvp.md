@@ -534,6 +534,69 @@ end.
 ```
 </details>
 
+<details>
+<summary>4.6.8. Diagrama do Grafo de Objetos em Execução</summary>
+</p>
+
+Este diagrama representa o estado da aplicação após ter sido iniciada e o usuário ter aberto a tela de edição a partir da tela de pesquisa.
+
+![image](./assets/mvp-diagrama-obj.svg)
+
+**Explicação Detalhada do Grafo**
+
+Vamos analisar como este grafo é construído passo a passo:
+
+1. **O Ponto de Partida (Escopo Global)**
+   - Quando a aplicação é iniciada, o arquivo `.dpr` executa `Application.CreateForm`.
+  
+   - `Application`: É o objeto global da VCL que gerencia o ciclo de vida da aplicação.
+  
+   - `DM: TDMClientes`: Uma instância única do nosso Data Module é criada e mantida pela `Application`. Esta é a nossa única fonte de verdade para acesso ao banco de dados. Todas as outras partes da aplicação que precisarem falar com o banco apontarão para esta mesma instância.
+
+2. **Grafo da Tela Principal (**`TFormPesquisaClientes`**)**
+   - Logo após o Data Module, o formulário principal, `FormPesquisaClientes`, é criado e mantido pela Application.
+
+   - Dentro do evento `FormCreate` de `FormPesquisaClientes`, um pequeno "sub-grafo" de objetos é instanciado para servir a esta tela:
+
+   - `ViewPesquisa`: É a própria instância do formulário.
+
+   - `LoggerPesquisa`: Uma instância de `TArquivoLogger` é criada.
+
+   - `ServicePesquisa`: Uma instância de `TClienteService` é criada. Ela recebe em seu construtor uma referência para a instância do logger (`LoggerPesquisa`) e para a instância global do Data Module (`DM`).
+
+   - `PresenterPesquisa`: Uma instância de `TClientePesquisaPresenter` é criada. Ela recebe em seu construtor uma referência para a `View` (o próprio formulário, `Self`) e para a instância do serviço que acabamos de criar (`ServicePesquisa`).
+
+   - Ao final do `FormCreate`, a `ViewPesquisa` mantém uma referência direta apenas ao seu Presenter (`FPresenter`). O Presenter, por sua vez, mantém as referências para a View e o Service, e o Service para o Logger e o Data Access. **Este conjunto de objetos viverá enquanto a tela de pesquisa estiver aberta**.
+
+3. **Grafo Temporário da Tela de Edição (**`TFormCadastroCliente`**)**
+   - Este grafo é criado somente quando o usuário clica em "Novo" ou "Editar" na tela de pesquisa.
+
+   - ViewCadastro: Uma nova instância do TFormCadastroCliente é criada.
+
+   - Dentro do FormCreate desta nova instância, um processo muito similar ao anterior acontece:
+
+     - Um novo LoggerCadastro é criado.
+
+     - Um novo ServiceCadastro é criado. Ele recebe o novo logger e uma referência para o mesmo Data Module global (DM).
+
+     - Um novo PresenterCadastro é criado, recebendo referências para a ViewCadastro e o ServiceCadastro.
+
+   - Isolamento: Este sub-grafo é quase totalmente isolado. O PresenterCadastro não sabe da existência do PresenterPesquisa. A única ponte comum e intencional é a referência que ambos os serviços (ServicePesquisa e ServiceCadastro) têm para a única instância do TDMClientes.
+
+   - Ciclo de Vida: Este grafo é temporário. Quando o usuário fecha a tela de cadastro, a instância `ViewCadastro` é liberada (`.Free`). Como o Presenter, o Service e o Logger foram criados por ela e são mantidos apenas por referências dentro deste escopo, eles também são liberados da memória.
+
+**Conclusão**
+
+Este modelo de grafo de objetos nos mostra os benefícios da arquitetura:
+
+- Encapsulamento: Cada "tela" ou funcionalidade principal (`Pesquisa`, `Cadastro`) gerencia seu próprio conjunto de objetos (Presenter, Service), mantendo a complexidade local.
+
+- Independência: A tela de cadastro poderia, teoricamente, ser chamada de qualquer outro lugar do sistema, pois ela é autossuficiente para criar seu próprio grafo de dependências.
+
+- Ponto Único de Acesso a Dados: Evitamos problemas de concorrência e gerenciamento de conexões `ao ter todas as operações passando pela mesma e única instância do TDMClientes`.
+
+</details>
+
 ## 5. Fluxos de Trabalho em Ação
 
 ### 5.1. Fluxo: Listar Clientes na Grade
