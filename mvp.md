@@ -155,7 +155,50 @@ A aplicação deste padrão, embora exija uma estrutura de arquivos mais elabora
 - **Testabilidade**: A lógica de negócio pode ser testada de forma automatizada, sem interação com a UI.
   
 - **Reutilização**: O `TClienteService` pode ser reutilizado por outras partes do sistema (um web service, um relatório, uma importação em lote) sem alterações.
-  
+
 - **Flexibilidade**: É possível alterar a tecnologia de banco de dados (modificando apenas o DataModule), o mecanismo de log (criando um novo `ILogger`) ou até mesmo a biblioteca de UI com impacto mínimo nas regras de negócio.
-  
+
+
+# Comparação entre MVP e MVC
+
 Esta documentação deve servir como a base para todo o desenvolvimento futuro, garantindo consistência e qualidade ao longo do ciclo de vida do software.
+
+Ambos os padrões, MVC (Model-View-Controller) e MVP (Model-View-Presenter), buscam o mesmo objetivo fundamental: separar as responsabilidades em uma aplicação. No entanto, eles fazem isso de maneiras sutilmente diferentes, o que tem implicações importantes em testabilidade e acoplamento.
+
+**O MVP é uma evolução e, portanto, mais recente que o MVC.**
+
+- **MVC (Model-View-Controller)**: Surgiu na década de 1970 com a linguagem Smalltalk, sendo um dos padrões de arquitetura de UI mais antigos e influentes.
+
+- **MVP (Model-View-Presenter)**: Foi introduzido na década de 1990 como uma especialização do MVC, com o objetivo de melhorar a separação de interesses e facilitar os testes automatizados, especialmente em aplicações com interfaces de usuário complexas.
+
+## Principais Diferenças entre MVC e MVP
+A diferença crucial está no papel do intermediário (Controller vs. Presenter) e em como ele interage com a View.
+
+1. **Comunicação e Fluxo de Dados**
+    - **MVC (Triangular)**: O `Controller` é o ponto de entrada. Ele recebe a entrada do usuário, manipula o `Model` e, em seguida, seleciona uma View para ser renderizada. A `View`, por sua vez, lê os dados diretamente do `Model` para se exibir. Isso cria uma dependência direta da `View` com o `Model`.
+      - **Fluxo**: Usuário interage com a `View -> View` chama o `Controller -> Controller` atualiza o `Model -> Model` notifica a `View -> View` lê os dados do Model e se atualiza.
+
+    - **MVP (Linear)**: O `Presenter` atua como um mediador completo entre o `Model` e a `View`. A `View` delega todas as interações do usuário para o `Presenter`. O `Presenter` então busca os dados do `Model`, aplica a lógica necessária e chama métodos específicos na `View` para que ela se atualize. A `View` não sabe da existência do `Model`.
+      - **Fluxo**: Usuário interage com a `View -> View notifica o Presenter -> Presenter` obtém dados do `Model -> Presenter` formata os dados e atualiza a `View`.
+
+2. **Acoplamento e Papel da View**
+    - **MVC**: A `View` é acoplada ao `Model`. Ela precisa "saber" como ler e interpretar os dados do `Model`. Isso pode dificultar a troca do `Model` ou o teste da `View` de forma isolada.
+
+    - **MVP**: A `View` é completamente desacoplada do `Model`. Ela é uma camada "burra" e passiva, que geralmente implementa uma interface com métodos como `setNomeUsuario(string nome)` ou `exibirMensagemErro(string msg)`. O `Presenter` é quem comanda a `View`.
+
+3. **Testabilidade**
+    - **MVC**: Pode ser mais difícil de testar. Como a `View` está ligada ao `Model`, testar a lógica do `Controller` muitas vezes exige a instanciação de componentes de UI ou a criação de Models complexos.
+
+    - **MVP**: É altamente testável. Como a `View` é desacoplada e se comunica com o `Presenter` através de uma interface, é muito fácil criar uma "View Falsa" (mock) nos testes unitários para verificar se o `Presenter` está se comportando corretamente (ex: "quando eu chamo `presenter.salvar()`, o método `view.exibirSucesso()` é chamado?"). A lógica de apresentação, que reside toda no Presenter, pode ser testada sem qualquer dependência de frameworks de UI.
+
+## Tabela Comparativa
+
+| Característica | MVC (Model-View-Controller) | MVP (Model-View-Presenter) |
+|-|-|-|
+| **Padrão de Comunicação** | Triangular (Controller -> Model -> View) | Linear (View <-> Presenter <-> Model) |
+| **Acoplamento** | A View é acoplada ao Model. | A View e o Model são desacoplados pelo Presenter. |
+| **Papel da View** | Mais ativa. Lê dados diretamente do Model. | Passiva. Apenas exibe dados e delega eventos ao Presenter. |
+| **Mediador** | `Controller` | `Presenter` |
+| **Relação** | Um Controller pode gerenciar múltiplas Views. | Geralmente, um Presenter para cada View (relação 1:1). |
+| **Testabilidade** | Moderada. Testar o Controller pode ser complexo. | Alta. O Presenter é facilmente testável com mocks da View. |
+| **Origem** | Mais antigo (Década de 1970) | Mais recente (Década de 1990) |
