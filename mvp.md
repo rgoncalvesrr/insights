@@ -106,10 +106,7 @@ As interfaces são o contrato que garante o baixo acoplamento.
 Esta seção contém os exemplos de código essenciais que formam a espinha dorsal da nossa arquitetura.
 
 <details>
-<summary>
-  4.6.1. As Interfaces (Os Contratos)
-</summary>
-
+<summary>4.6.1. As Interfaces (Os Contratos)</summary>
   
 As interfaces definem o que cada componente faz, garantindo o desacoplamento.
 
@@ -188,9 +185,7 @@ end.
 </details>
 
 <details>
-<summary>
- 4.6.2. O Objeto de Domínio
-</summary>
+<summary>4.6.2. O Objeto de Domínio</summary>
 
 
 Representa a estrutura de dados principal.
@@ -273,7 +268,10 @@ end.
 ```
 </details>
 
-#### 4.6.4. A Camada de Lógica (Service)
+<details>
+<summary>4.6.4. A Camada de Lógica (Service)</summary>
+
+  
 Onde as regras de negócio residem.
 
 *Arquivo*: `Cliente.Service.pas`
@@ -341,8 +339,12 @@ end;
 
 end.
 ```
+</details>
 
-#### 4.6.5. Os Apresentadores (Presenters)
+<details>
+<summary>4.6.5. Os Apresentadores (Presenters)</summary>
+
+  
 O cérebro que conecta a View ao Service.
 
 *Arquivo*: `Cliente.Pesquisa.Presenter.pas`
@@ -429,9 +431,12 @@ end;
 
 end.
 ```
+</details>
 
+<details>
+<summary>4.6.6. A Camada de Apresentação (Views)</summary>
 
-#### 4.6.6. A Camada de Apresentação (Views)
+  
 As classes `TForm` que implementam as interfaces de View.
 
 *Arquivo*: `View.PesquisaClientes.pas`
@@ -482,9 +487,11 @@ end;
 // ... resto da implementação da interface e criação do presenter no FormCreate ...
 end.
 ```
+</details>
 
+<details>
+<summary>4.6.7. O Ponto de Entrada: O Arquivo de Projeto (`.dpr`)</summary>
 
-#### 4.6.7. O Ponto de Entrada: O Arquivo de Projeto (`.dpr`)
 Todos os componentes e formulários que projetamos são inicializados e orquestrados a partir do arquivo principal do projeto.
 
 *Arquivo*: `ProjetoMVP.dpr`
@@ -525,7 +532,7 @@ begin
   Application.Run;
 end.
 ```
-
+</details>
 
 ## 5. Fluxos de Trabalho em Ação
 
