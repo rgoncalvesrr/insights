@@ -37,7 +37,7 @@ O padrão Model-View-Presenter divide a funcionalidade em três papéis distinto
 ### Diagrama de Componentes
 Este diagrama ilustra a relação estática entre os principais componentes do nosso exemplo de "Cadastro de Clientes".
 
-![image](./assets/mvp-diagrama-comp.png)
+![image](assets/mvp-diagrama-comp.svg)
 
 ## 4. Detalhamento dos Componentes
 
