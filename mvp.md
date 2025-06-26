@@ -82,3 +82,54 @@ As interfaces são o contrato que garante o baixo acoplamento.
   - Expõe métodos de alto nível (ex: `CarregarPorID`, `Listar`).
   - Retorna ou um objeto de domínio preenchido (`TCliente`) ou um TDataSet para listagens, mas não contém lógica de negócio.
 
+## 5. Fluxos de Trabalho em Ação
+
+### 5.1. Fluxo: Listar Clientes na Grade
+1. **Usuário** digita um termo na `edtBusca` e clica no botão `btnPesquisar`.
+2. **View** (`TFormPesquisaClientes`) aciona o método `btnPesquisarClick`, que chama `FPresenter.Pesquisar`.
+3. **Presenter** (`TClientePesquisaPresenter`) chama `FService.Listar`, passando o termo de busca que ele obteve da View.
+4. **Service** (`TClienteService`) loga a ação e chama FClienteData.Listar.
+5. **Data Access** (`TDMClientes`) executa a consulta `SELECT` no banco e retorna o `TADOQuery` (um `TDataSet`) aberto.
+6. **Presenter** recebe o `TDataSet` e o atribui ao `DataSource` da View: `FView.DataSource.DataSet := LDataSet;`.
+7. **View**, através da mágica data-aware da VCL, exibe automaticamente os dados na TDBGrid.
+
+### 5.2. Fluxo: Editar um Cliente
+1. **Usuário** dá um duplo-clique num registro da `TDBGrid`.
+2. **View de Pesquisa** aciona o método `btnEditarClick`, que chama `FPresenter.Editar`.
+3. **Presenter de Pesquisa** obtém o `IDSelecionado` da View e chama `FView.AbrirTelaCadastro(ID)`.
+4. **View de Pesquisa** cria a instância do `TFormCadastroCliente` e passa o ID para ele.
+5. **View de Cadastro**, ao ser exibida (`OnShow`), chama `FPresenter.CarregarDados`.
+6. **Presenter de Cadastro** chama `FService.Carregar(ID)`. O Service busca os dados no banco (via DataModule) e retorna um objeto `TCliente` preenchido.
+7. **Presenter de Cadastro** recebe o objeto `TCliente` e atualiza a View: `FView.Nome := LCliente.Nome`, `FView.Cidade := LCliente.Cidade`.
+8. **View de Cadastro** implementa `SetNome`, que simplesmente faz `edtNome.Text := Value`.
+9. **Usuário** altera os dados e clica em "Salvar". O fluxo se inverte, passando pelo Presenter, pelo Service (onde as regras são validadas e o log é gravado) e pelo Data Access para executar o `UPDATE` no banco.
+10. **A View de Cadastro** é fechada.
+11. O controle volta para a View de Pesquisa, que, para garantir que a grade está atualizada, chama `FPresenter.Pesquisar` novamente.
+
+A decisão de **não reutilizar o DataSet** da grade na tela de edição é fundamental, pois garante o isolamento das telas e o respeito à camada de serviço.
+
+**Diagrama de Sequência: Ação "Salvar"**
+
+```mermaid
+sequenceDiagram
+    actor User as Usuário
+    participant View as "View (TFormCadastro)"
+    participant Presenter
+    participant Service as "Service (TClienteService)"
+    participant Data as "Data (TDMClientes)"
+    participant Logger
+
+    User->>View: 1. Altera dados e clica em Salvar
+    View->>Presenter: 2. Chama Presenter.Salvar()
+    Presenter->>View: 3. Pede os dados da UI (Nome, Cidade...)
+    View-->>Presenter: 4. Retorna os dados
+    Presenter->>Service: 5. Chama Service.Salvar(objetoCliente)
+    Service->>Logger: 6. LogInfo("Iniciando...")
+    Service->>Service: 7. Validações e Regras de Negócio
+    Service->>Data: 8. Chama Data.Salvar(objetoCliente)
+    Data-->>Service: 9. Retorna sucesso
+    Service->>Logger: 10. LogInfo("Sucesso!")
+    Service-->>Presenter: 11. Retorna sucesso
+    Presenter->>View: 12. Chama View.ExibirMensagemSucesso()
+    View-->>User: 13. Mostra ShowMessage() e fecha a tela
+```
