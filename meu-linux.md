@@ -174,7 +174,7 @@ Ajeitar o cedilha errado no Debian e derivados usando Gnome.
 
 Pronto, agora você pode escrever o ç corretamente!
 
-#### **Solução para aplicativos GTK 4**
+### **Solução para aplicativos GTK 4**
 
 Para aplicativos GTK 4 (como o gnome-text-editor que veio no Ubuntu 24.04) é necessário fazer os passos abaixo.
 
