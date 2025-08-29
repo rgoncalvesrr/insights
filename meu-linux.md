@@ -132,6 +132,68 @@ cat /sys/block/sda/queue/scheduler
 
 Agora, Kyber deverá estar entre parênteses, indicando que está em uso: `mq-deadline [kyber] bfq none`.
 
+### Passo 6: Ajustando tecla do US Internacional
+
+Ajeitar o cedilha errado no Debian e derivados usando Gnome.
+
+- **Confirme que o layout (Fonte de entrada) do seu teclado possui “intern.” ou “intl.” no nome**
+  
+  Exemplos: Ingês (EUA, intern. alt.) e English (US, intl., with dead keys). Esta informação está na tela de configuração do teclado do sistema.
+
+- **Edite o arquivo /etc/environment**
+
+  A maneira mais fácil para editar este arquivo é abrir um terminal e digitar:
+  ```bash
+  sudo gnome-text-editor /etc/environment
+  ``` 
+
+  OU
+  
+  ```bash
+  sudo vim /etc/environment
+  ```
+
+  O comando acima vai pedir a senha do seu usuário e depois de digitá-la (enquanto você digita o terminal não irá mostrar nada) é só apertar a tecla `ENTER` que o editor gedit vai abrir. Não tem problema se o seu arquivo estiver vazio.
+  
+- **Adicionar linhas no final do arquivo**
+
+  Adicione as seguintes linhas no final do arquivo:
+  ``` 
+  GTK_IM_MODULE=cedilla
+  QT_IM_MODULE=cedilla
+  ```
+- **Salve o arquivo**
+
+  Clique no botão ” Salvar” localizado no canto direito superior da tela, ou use a tecla de atalho `Shift+:`, `x`, `Enter`.
+
+- **Encerre a sessão do seu usuário ou reinice o computador**
+  
+  É necessário deslogar e logar novamente para a alteração funcionar. Caso não funcione, reinicie seu computador.
+
+Pronto, agora você pode escrever o ç corretamente!
+
+#### **Solução para aplicativos GTK 4**
+
+Para aplicativos GTK 4 (como o gnome-text-editor que veio no Ubuntu 24.04) é necessário fazer os passos abaixo.
+
+- Criar um arquivo .XCompose no diretório do seu usuário com o conteúdo abaixo:
+
+  ```bash
+  # UTF-8 (Unicode) compose sequences
+
+ # Overrides C acute with Ccedilla:
+ <dead_acute> <C> : "Ç" "Ccedilla"
+ <dead_acute> <c> : "ç" "ccedilla"
+  ```
+
+- Executar o comando no terminal:
+
+  ```bash
+  gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/IMModule': <'ibus'>}"
+  ```
+
+  _**Fonte: [Daniel Kossmann](https://www.danielkossmann.com/pt/ajeitando-cedilha-errado-ubuntu-linux/) acessado em 29/8/2025**_
+
 ### Considerações adicionais:
 
 - **Tipos de disco**: Como mencionado, o agendador ideal depende do tipo de armazenamento. Para NVMe SSDs, `"none"` geralmente é o melhor. Para HDDs ou SSDs SATA mais antigos, Kyber ou BFQ podem oferecer melhor desempenho em certas cargas de trabalho.
