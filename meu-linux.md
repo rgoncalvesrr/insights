@@ -132,15 +132,15 @@ cat /sys/block/sda/queue/scheduler
 
 Agora, Kyber deverá estar entre parênteses, indicando que está em uso: `mq-deadline [kyber] bfq none`.
 
-### Passo 6: Ajustando tecla do US Internacional
+## Ajeitando o cedilha errado (ć) no Debian e derivados
 
 Ajeitar o cedilha errado no Debian e derivados usando Gnome.
 
-- **Confirme que o layout (Fonte de entrada) do seu teclado possui “intern.” ou “intl.” no nome**
+### Passo 1: **Confirme que o layout (Fonte de entrada) do seu teclado possui “intern.” ou “intl.” no nome**
   
   Exemplos: Ingês (EUA, intern. alt.) e English (US, intl., with dead keys). Esta informação está na tela de configuração do teclado do sistema.
 
-- **Edite o arquivo /etc/environment**
+### Passo 2: **Edite o arquivo /etc/environment**
 
   A maneira mais fácil para editar este arquivo é abrir um terminal e digitar:
   ```bash
@@ -155,18 +155,20 @@ Ajeitar o cedilha errado no Debian e derivados usando Gnome.
 
   O comando acima vai pedir a senha do seu usuário e depois de digitá-la (enquanto você digita o terminal não irá mostrar nada) é só apertar a tecla `ENTER` que o editor gedit vai abrir. Não tem problema se o seu arquivo estiver vazio.
   
-- **Adicionar linhas no final do arquivo**
+### Passo 3: **Adicionar linhas no final do arquivo**
 
   Adicione as seguintes linhas no final do arquivo:
+  
   ``` 
   GTK_IM_MODULE=cedilla
   QT_IM_MODULE=cedilla
   ```
-- **Salve o arquivo**
+
+### Passo 4: **Salve o arquivo**
 
   Clique no botão ” Salvar” localizado no canto direito superior da tela, ou use a tecla de atalho `Shift+:`, `x`, `Enter`.
 
-- **Encerre a sessão do seu usuário ou reinice o computador**
+### Passo 5: **Encerre a sessão do seu usuário ou reinice o computador**
   
   É necessário deslogar e logar novamente para a alteração funcionar. Caso não funcione, reinicie seu computador.
 
@@ -181,9 +183,9 @@ Para aplicativos GTK 4 (como o gnome-text-editor que veio no Ubuntu 24.04) é ne
   ```bash
   # UTF-8 (Unicode) compose sequences
 
- # Overrides C acute with Ccedilla:
- <dead_acute> <C> : "Ç" "Ccedilla"
- <dead_acute> <c> : "ç" "ccedilla"
+   # Overrides C acute with Ccedilla:
+   <dead_acute> <C> : "Ç" "Ccedilla"
+   <dead_acute> <c> : "ç" "ccedilla"
   ```
 
 - Executar o comando no terminal:
