@@ -6,6 +6,7 @@
   - [Pass-Through Memória Virtualização](#iommupt)
   - [Desabilitar AppArmor](#apparmor0)
 - [Agendado de Disco](#agendador-de-disco-scheduler)
+- [Ajeitando o Cedilha](#ajeitando-o-cedilha-errado-ć-no-debian-e-derivados)
 
 > [!IMPORTANT]
 > Essas configurações foram criadas para o hardware a seguir:
