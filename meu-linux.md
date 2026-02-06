@@ -59,6 +59,17 @@ options root=UUID=5c0bd230-805d-4fec-943c-f8d5ba8a5911 ro quiet loglevel=0 syste
 > 
 
 
+### `selinux=0`
+
+- **Para que serve**: Desabilita o Selinux.
+- **Detalhes**: O SELinux é um **Módulo de Segurança do Linux (LSM)** que impõe perfis de segurança para programas individuais, restringindo seus recursos e acesso a arquivos e rede. Ao definir `selinux=0`, você desativa completamente essa camada de segurança. Isso pode ser feito para depuração de problemas, ou em ambientes onde o SELinux não é necessário ou interfere com alguma aplicação específica, mas é importante notar que isso reduz a segurança do sistema.
+
+> [!IMPORTANT]
+>
+> Esse parâmetro é válido para distribuições baseadas em Red Hat que utilizam **SELinux** em detrimento do **AppArmor**
+> 
+
+
 ## Agendador de Disco (Scheduler)
 
 
