@@ -208,6 +208,23 @@ Para aplicativos GTK 4 (como o gnome-text-editor que veio no Ubuntu 24.04) é ne
 
   _**Fonte: [Daniel Kossmann](https://www.danielkossmann.com/pt/ajeitando-cedilha-errado-ubuntu-linux/) acessado em 29/8/2025**_
 
+### Resolução iBus
+
+Se seu teclado for ABNT utilize esse comando: `echo 'include "%L"' >> ~/.config/ibus/Compose`
+
+Caso seja Internacional utilize esse aqui: se for internacional
+
+```bash
+echo 'include "%L"               
+
+<dead_acute> <c> : "ç"   ccedilla
+<dead_acute> <C> : "Ç"   Ccedilla' >> ~/.config/ibus/Compose
+```
+Depois reinicia a máquina.
+
+_**Fonte: [Forum Diolinux](https://plus.diolinux.com.br/t/fedora-43-gnome-tecla-de-espaco-nao-cancela-mais-o-modo-tecla-morta/78357/2) acessado em 26/2/2026**_
+
+
 ### Considerações adicionais:
 
 - **Tipos de disco**: Como mencionado, o agendador ideal depende do tipo de armazenamento. Para NVMe SSDs, `"none"` geralmente é o melhor. Para HDDs ou SSDs SATA mais antigos, Kyber ou BFQ podem oferecer melhor desempenho em certas cargas de trabalho.
